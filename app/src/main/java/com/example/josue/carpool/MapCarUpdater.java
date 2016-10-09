@@ -26,8 +26,8 @@ public class MapCarUpdater {
     public void updateMap() {
         map.clear();
         for (User driver : this.cars.getCars()) {
-            Log.e("Lat", "" + driver.getLocation().latitude);
-            Log.e("Long", "" + driver.getLocation().longitude);
+//            Log.e("Lat", "" + driver.getLocation().latitude);
+//            Log.e("Long", "" + driver.getLocation().longitude);
             MarkerOptions marker =
                     new MarkerOptions()
                             .position(driver.getLocation())

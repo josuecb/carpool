@@ -1,5 +1,6 @@
 package com.example.josue.carpool;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -27,14 +29,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMapClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        View.OnClickListener {
+        View.OnClickListener,
+        GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -45,8 +50,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Spinner schoolSpinner;
     private Button okBtn, cancelBtn;
     private Button yesBtn, noBtn;
+    private Button settingBtn;
     private Dialog dialog;
-
+    private Context context;
+    private Activity activity;
+    private LatLng schoolLonLat;
+    private TextView pointsRemaining;
+    private LocalStorage localStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +69,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         schoolSpinner = (Spinner) findViewById(R.id.school_spinner);
         // Create an instance of GoogleAPIClient.
         mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
-        spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_item);
         okBtn = (Button) findViewById(R.id.ok_btn);
+        pointsRemaining = (TextView) findViewById(R.id.remaining_points_id);
         cancelBtn = (Button) findViewById(R.id.cancel_btn);
+        settingBtn = (Button) findViewById(R.id.setting_btn);
+        localStorage = new LocalStorage(CarPool.LOCAL_STORAGE_CRED);
+        context = this;
+        activity = this;
 
+
+        spinnerAdapter = new SpinnerAdapter(context, android.R.layout.simple_spinner_item);
+
+        pointsRemaining.setText(localStorage.pull(CarPool.USER_POINTS_LABEL, context) + "P");
         /**
          * Setting up dialog
          */
@@ -76,6 +94,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         yesBtn = (Button) dialog.findViewById(R.id.accept_dia_btn);
         noBtn = (Button) dialog.findViewById(R.id.cancel_dia_btn);
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final Data data = ApiClient.locationApi.listSchools().execute().body();
+
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (School2 school : data.data) {
+                                try{
+                                    spinnerAdapter.add(new School(school.name, new LatLng(Double.parseDouble(school.latitude), Double.parseDouble(school.longitude))));
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
         /**
          * Ending setting dialog
          */
@@ -84,7 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         /**
          * Adding Schools
          */
-        spinnerAdapter.add(new School("LaGuardia Community college", new LatLng(42.60108400014901, -83.18480399985098)));
+        spinnerAdapter.add(new School("Michigan University", new LatLng(42.346873, -83.039889)));
         spinnerAdapter.add(new School("NYU", new LatLng(43.60108400014901, -84.18480399985098)));
 
         schoolSpinner.setAdapter(spinnerAdapter);
@@ -94,6 +136,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         schoolSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                School school = spinnerAdapter.getItem(i);
+                schoolLonLat = school.getLocation();
+
 
             }
 
@@ -107,10 +152,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         cancelBtn.setOnClickListener(this);
         yesBtn.setOnClickListener(this);
         noBtn.setOnClickListener(this);
+        settingBtn.setOnClickListener(this);
 
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_map, menu);
+        return true;
+    }
 
     @Override
     protected void onStart() {
@@ -127,13 +179,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public Cars createDrivers(float times) {
         String[] names = {"Jhon", "Paul", "Sean", "Michael", "Pink"};
         System.out.println(times);
-
         LatLng[] latLngs = {
-                new LatLng(42.566084 + times, -83.219804 + times),
-                new LatLng(42.466084 + times, -82.320804 + times),
-                new LatLng(42.766084 + times, -83.269804 + times),
-                new LatLng(43.966084 + times, -82.229004 + times),
-                new LatLng(44.86084 + times, -81.229004 + times)};
+                new LatLng(42.26084 + times, -83.199804 + times),
+                new LatLng(42.236084 + times / 2, -83.150804 + times),
+                new LatLng(42.256084 - times / 4, -83.159804 + times),
+                new LatLng(42.216084 + times, -83.151304 + times),
+                new LatLng(42.225084 + times, -83.125004 + times)};
+
 
         System.out.println(Arrays.toString(latLngs));
         Cars drivers = new Cars();
@@ -159,7 +211,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mapCarUpdater.setDrivers(createDrivers((float) times / 1000));
                     mapCarUpdater.updateMap();
                 }
-            }, 500);
+            }, 2000);
         }
     }
 
@@ -181,7 +233,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         // Add a marker in Sydney and move the camera
 //        LatLng detroit = new LatLng(49.566084, -84.229804);
 //        mMap.addMarker(new MarkerOptions().position(detroit).title("Marker in Sydney"));
@@ -228,9 +279,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapCarUpdater = new MapCarUpdater(this.mMap, drivers);
         mapCarUpdater.updateMap();
 
+        mMap.setOnMarkerClickListener(this);
 
         loopTimer(100);
     }
+
 
     public void requestPermisionOrZoomIn(boolean gpsIsEnabled) {
         if (!gpsIsEnabled) {
@@ -249,12 +302,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             //Zooming
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            Log.e("LAT", mLastLocation.getLatitude() + "");
+            Log.e("LONG ", mLastLocation.getLongitude() + "");
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (mLastLocation != null) {
                         // Goes to my last connection if there is any
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 13));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 10));
                     }
                 }
             }, 1000);
@@ -300,9 +355,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             case R.id.cancel_dia_btn:
                 dialog.hide();
                 break;
+            case R.id.setting_btn:
+                Intent goSetting = new Intent(context, Settings.class);
+                startActivity(goSetting);
+                finish();
             default:
                 break;
         }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+//        Log.e("Location", String.valueOf(marker.getPosition().latitude));
+//        Log.e("title", marker.getTitle());
+        Intent i = new Intent(this, DriverInfoActivity.class);
+        i.putExtra("name", marker.getTitle());
+        i.putExtra("lat", "" + marker.getPosition().latitude);
+        i.putExtra("lon", "" + marker.getPosition().longitude);
+        i.putExtra("s_lat", "" + schoolLonLat.latitude);
+        i.putExtra("s_lon", "" + schoolLonLat.longitude);
+        startActivity(i);
+        finish();
+        return false;
     }
 }
 

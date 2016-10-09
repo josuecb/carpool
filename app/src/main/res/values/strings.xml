@@ -5,4 +5,23 @@
     <string name="no">No</string>
     <string name="dialog_title">You can carpool</string>
     <string name="dialog_msg"> -> +100 Points</string>
+    <string name="notify">Notify Driver</string>
+    <string name="name_label">Name</string>
+    <string name="user_state_id">State Id</string>
+    <string name="user_password_label">Password</string>
+    <string name="email_label">Email</string>
+    <string name="phoneNumber_label">Phone</string>
+    <string name="action_settings">Setting</string>
+    <string name="logout_action_setting">Log Out</string>
+    <string name="edit_setting">Edit Profile</string>
+    <string name="id_label">Id</string>
+    <string name="sign_in_label">Sign In</string>
+    <string name="register_label">Register</string>
+    <string name="appName">CarPool</string>
+    <string name="save_label">Save</string>
+    <string name="points">Points</string>
+    <string name="away">Away</string>
+    <string name="mysettings">Edit My Profile</string>
+    <string name="driverinfo">Driver Info</string>
+    <string name="your_points">You have 100 Points</string>
 </resources>

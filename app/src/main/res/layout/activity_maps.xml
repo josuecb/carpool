@@ -2,38 +2,52 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/lightGreen"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@color/darkGray"
     tools:context="com.example.josue.carpool.MapsActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/drivers_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:orientation="vertical">
 
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+        <LinearLayout
+            android:id="@+id/map_container"
             android:layout_width="match_parent"
-            android:layout_height="400dp" />
+            android:layout_height="wrap_content">
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="400dp" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/map_container"
+            android:background="#fff" />
 
         <Spinner
-            android:paddingTop="16dp"
             android:id="@+id/school_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp" />
+            android:layout_below="@id/divider"
+            android:layout_marginRight="16dp"
+            android:paddingTop="16dp" />
 
         <LinearLayout
+            android:id="@+id/user_action"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:paddingTop="16dp"
-            android:gravity="center">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/school_spinner"
+            android:gravity="center"
+            android:paddingTop="16dp">
 
             <Button
                 android:id="@+id/ok_btn"
@@ -46,10 +60,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="CANCEL" />
-
+            <TextView
+                android:id="@+id/remaining_points_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="26dp"
+                android:text="P"
+                android:textColor="#fff"
+                android:textSize="24sp" />
         </LinearLayout>
 
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_below="@id/user_action">
+
+            <Button
+                android:id="@+id/setting_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_setting" />
+        </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

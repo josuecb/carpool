@@ -10,6 +10,8 @@ public class School {
     private String name;
     private String id;
     private LatLng location;
+    private String latitude;
+    private String longitude;
 
     public School(String name, String id, LatLng location) {
         this.name = name;

@@ -19,18 +19,17 @@ import java.util.List;
 
 public class SpinnerAdapter extends ArrayAdapter<School> {
     Context context;
-    private ArrayList<School> schools;
+    private ArrayList<School> schools = new ArrayList<>();
     TextView SchoolName;
 
     public SpinnerAdapter(Context context, int resource) {
         super(context, resource);
         this.context = context;
-        schools = new ArrayList<>();
     }
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return super.getDropDownView(position, convertView, parent);
+        return getView(position, convertView, parent);
     }
 
     @Override
