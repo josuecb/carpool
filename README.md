@@ -1,4 +1,4 @@
-# carpool
+# Carpool
 Android app to make everybody to stay connected with tansit and help each other getting some benefits.
 
 ## It Uses
