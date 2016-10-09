@@ -18,6 +18,9 @@ public class Cars {
             cars.add(driver);
     }
 
+    public int getSize(){
+        return this.cars.size();
+    }
     public ArrayList<User> getCars() {
         return cars;
     }

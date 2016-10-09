@@ -16,7 +16,7 @@ public class Calculations
 	}
 
 	public static int calculatePoints(int miles){
-		double points = miles * 15;
+		double points = miles * 7;
 		return (int) Math.ceil(points);
 	}
 }

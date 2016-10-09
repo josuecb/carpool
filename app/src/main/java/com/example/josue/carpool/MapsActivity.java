@@ -28,8 +28,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -57,6 +59,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LatLng schoolLonLat;
     private TextView pointsRemaining;
     private LocalStorage localStorage;
+    private Marker schoolMarker;
+    private MarkerOptions schoolMarkerOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,9 +108,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         @Override
                         public void run() {
                             for (School2 school : data.data) {
-                                try{
+                                try {
                                     spinnerAdapter.add(new School(school.name, new LatLng(Double.parseDouble(school.latitude), Double.parseDouble(school.longitude))));
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -136,10 +140,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         schoolSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (schoolMarker != null)
+                    schoolMarker.remove();
+
                 School school = spinnerAdapter.getItem(i);
                 schoolLonLat = school.getLocation();
 
-
+                schoolMarkerOption =
+                        new MarkerOptions()
+                                .position(new LatLng(schoolLonLat.latitude, schoolLonLat.longitude))
+                                .title(school.getName());
+                schoolMarkerOption.icon(BitmapDescriptorFactory.fromResource(R.drawable.shcool));
+                schoolMarker = mMap.addMarker(schoolMarkerOption);
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(schoolLonLat.latitude, schoolLonLat.longitude), 9));
             }
 
             @Override
@@ -177,14 +190,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @return Cars: driver list so the map can update
      */
     public Cars createDrivers(float times) {
-        String[] names = {"Jhon", "Paul", "Sean", "Michael", "Pink"};
+        String[] names = {"Jhon", "Paul", "Sean", "Michael", "Pink", "Francis", "Michael", "Choi"};
         System.out.println(times);
         LatLng[] latLngs = {
-                new LatLng(42.26084 + times, -83.199804 + times),
-                new LatLng(42.236084 + times / 2, -83.150804 + times),
-                new LatLng(42.256084 - times / 4, -83.159804 + times),
-                new LatLng(42.216084 + times, -83.151304 + times),
-                new LatLng(42.225084 + times, -83.125004 + times)};
+                new LatLng(41.19084 + times + times / 2, -83.103304 + times),
+                new LatLng(42.90084 + times + times / 3, -82.199804 + times),
+                new LatLng(43.04284 + times, -82.929804 + times),
+                new LatLng(42.30084 - times / 4, -83.099804 + times),
+                new LatLng(42.298084 + times / 2, -83.150804 + times),
+                new LatLng(42.284084 - times / 4, -83.109804 + times),
+                new LatLng(42.292084 + times, -83.051304 + times),
+                new LatLng(42.314084 + times, -83.025004 + times)};
 
 
         System.out.println(Arrays.toString(latLngs));
@@ -208,8 +224,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 public void run() {
                     Log.e("updating", "" + times);
                     loopTimer(times - 1);
-                    mapCarUpdater.setDrivers(createDrivers((float) times / 1000));
+                    mapCarUpdater.setDrivers(createDrivers((float) times / 2000));
                     mapCarUpdater.updateMap();
+                    if (schoolMarkerOption != null)
+                        schoolMarker = mMap.addMarker(schoolMarkerOption);
                 }
             }, 2000);
         }
