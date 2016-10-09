@@ -15,7 +15,7 @@ Android app to help students get where they need to go through carpooling, and h
 * Mathematical analysis to get priority distance and places.
 
 #### Back-End resource
-![Become a pool](https://github.com/shubhamagiwal/carpool-backend)
+![Back End Link](https://github.com/shubhamagiwal/carpool-backend)
 
 
 
