@@ -12,7 +12,7 @@ Android app to help students get where they need to go through carpooling, and h
 * Amazon cloud storage as web server to store peoples data and location points
 * Google Maps API v2
 * Universities Data from Resources given
-* Mathematical analisys to get priority distance and places.
+* Mathematical analysis to get priority distance and places.
 
 #### Sign in
 * Sign into your account if you have one already
