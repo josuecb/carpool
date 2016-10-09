@@ -59,17 +59,38 @@ public class RegistrationPage extends AppCompatActivity implements View.OnClickL
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    try {
+                        UserPost data = ApiClient.locationApi.registerRequest(new UserRegistrationDetails(
+                                nameText.getText().toString(),
+                                emailText.getText().toString(),
+                                phoneText.getText().toString(),
+                                stateId.getText().toString(),
+                                passwordText.getText().toString()
+                        )).execute().body();
 
-                    localStorage.save(CarPool.USER_NAME_LABEL, nameText.getText().toString(), context);
-                    localStorage.save(CarPool.USER_EMAIL_LABEL, emailText.getText().toString(), context);
-                    localStorage.save(CarPool.USER_PHONE_LABEL, phoneText.getText().toString(), context);
-                    localStorage.save(CarPool.USER_STATEID_LABEL, nameText.getText().toString(), context);
-                    localStorage.save(CarPool.USER_ID, nameText.getText().toString(), context);
-                    localStorage.save(CarPool.USER_PASS_LABEL, nameText.getText().toString(), context);
-                    localStorage.save(CarPool.USER_POINTS_LABEL, "100", context);
+                        Log.e("RESPONSE EMAIL", data.authDetails.email);
+                        Log.e("RESPONSE PHONE", data.authDetails.phone);
+                        Log.e("RESPONSE (TOKEN)", data.accessTokenDetails.token);
+                        Log.e("RESPONSE FULL NAME", data.userDetails.fullName);
+                        Log.e("RESPONSE ID", "" + data.userDetails.id);
+                        Log.e("RESPONSE STATE ID", "" + data.userDetails.stateId);
 
-                    Intent goToMap = new Intent(context, MapsActivity.class);
-                    startActivity(goToMap);
+                        if (!data.authDetails.email.isEmpty()) {
+                            localStorage.save(CarPool.USER_NAME_LABEL, data.userDetails.fullName, context);
+                            localStorage.save(CarPool.USER_EMAIL_LABEL, data.authDetails.email, context);
+                            localStorage.save(CarPool.USER_PHONE_LABEL, data.authDetails.phone, context);
+                            localStorage.save(CarPool.USER_STATEID_LABEL, data.userDetails.stateId, context);
+                            localStorage.save(CarPool.USER_ID, String.valueOf(data.userDetails.id), context);
+                            localStorage.save(CarPool.USER_PASS_LABEL, data.accessTokenDetails.token, context);
+                            localStorage.save(CarPool.USER_POINTS_LABEL, "100", context);
+                            Log.i("data", data.authDetails.email);
+
+                            Intent goToMap = new Intent(context, MapsActivity.class);
+                            startActivity(goToMap);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }).start();
 
