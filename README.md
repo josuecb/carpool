@@ -1,5 +1,5 @@
 # Carpool
-Android app to make everybody to stay connected with tansit and help each other getting some benefits.
+Android app to help students get where they need to go through carpooling, and helping each other to earn rewards.
 
 ## Summary
 * Use Carpool to request a ride to you high school.
@@ -15,32 +15,34 @@ Android app to make everybody to stay connected with tansit and help each other 
 * Mathematical analisys to get priority distance and places.
 
 #### Sign in
-* Log in with your account if you have one already
+* Sign into your account if you have one already
 
 ![Sign In](img/img1.png)
 
 ### Register
-* You must create an account to verify your identity and drivers identity for safety purposes.
+* Create an account
+* Accounts are verified with State IDs for safety purposes.
 ![Register](img/img2.png)
 
-### Choose a place 
-* You can pick a place where you want to go and see drivers around that might be going to the same place
+### Select Destination 
+* Select your destination, and find drivers going to that are heading to the same place.
 ![Pick a Place](img/img7.png)
 
-### Look for a car
-* Look for someone that is going to the same direction that you are going.
+### Look for a Car
+* Look for someone who is going to your destination.
 ![Look For a pool](img/img3.png)
 
-### Look for driver info
+### Look for Driver info
 * You can look for the driver info and be safe, you can also see how many minutes he will get to you, request his help, his number
+* Look at driver information to match your preferences. See how far away your driver is from you, request driver's number, and request service.
 ![Look for driver info](img/img4.png)
 
-### Become a pool
+### Become a Pool
 * Becoming a pool means to request your driving services to others. Drivers earn points for transporting customers. These points can be used to request rides in the future, or redeemed for special offers.
 ![Become a pool](img/img5.png)
 
 ### Edit your profile
-* After verified you can edit your profile changing profile picture, username, phonenumber or even password.
+* Once verified, you can edit your profile by changing your profile picture, username, phone number, and password.
 
 ![Edit Your Profile](img/img6.png)
 
