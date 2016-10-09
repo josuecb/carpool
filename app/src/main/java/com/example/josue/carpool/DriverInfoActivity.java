@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -39,6 +41,8 @@ public class DriverInfoActivity extends AppCompatActivity implements View.OnClic
         email.setText(intent.getStringExtra("name") + "@email.com");
         phone.setText("212-234-3488");
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         double lat1 = Double.parseDouble(intent.getStringExtra("lat"));
         double lon1 = Double.parseDouble(intent.getStringExtra("lon"));
 
@@ -65,6 +69,19 @@ public class DriverInfoActivity extends AppCompatActivity implements View.OnClic
     protected void onResume() {
         super.onResume();
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(this, MapsActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
